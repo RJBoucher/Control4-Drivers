@@ -1,0 +1,435 @@
+<devicedata>
+  <c4id>a2d6daf2-78b1-4868-8284-72f69d38bd06</c4id>
+  <copyright>Copyright 2004-2012 Control4 Corporation.  All rights reserved.</copyright>
+  <creator>Ryan Boucher</creator>
+  <manufacturer>THEORY</manufacturer>
+  <name>Yahoo Weather Service</name>
+  <model>Yahoo Weather</model>
+  <created>04/15/2013 05:46 PM</created>
+  <modified>04/16/2013 11:41 AM</modified>
+  <version>1</version>
+  <small>devices_sm\receiver.gif</small>
+  <large>devices_lg\receiver.gif</large>
+  <top>
+  </top>
+  <bottom>
+  </bottom>
+  <front>
+  </front>
+  <back>
+  </back>
+  <left>
+  </left>
+  <right>
+  </right>
+  <control>lua_gen</control>
+  <controlmethod>ip</controlmethod>
+  <driver>DriverWorks</driver>
+  <search_type>c4:av_gen</search_type>
+  <combo>True</combo>
+  <OnlineCategory>others</OnlineCategory>
+  <proxies qty="1">
+    <proxy>other</proxy>
+  </proxies>
+  <config>
+    <power_management_method>AlwaysOn</power_management_method>
+    <power_command_delay>0</power_command_delay>
+    <power_delay>0</power_delay>
+    <power_command_needed>False</power_command_needed>
+    <documentation>Use this following site to get WOEID for local weather station. This is not a ZIP code!!!
+
+http://woeid.rosselliot.co.nz/lookup
+
+Documentation for Yahoo Weather API
+
+http://developer.yahoo.com/weather
+
+barometric pressure state: steady (0), rising (1), or falling (2)
+
+
+Code		Description
+
+0 		tornado 
+1 		tropical storm 
+2 		hurricane 
+3 		severe thunderstorms 
+4 		thunderstorms 
+5 		mixed rain and snow 
+6 		mixed rain and sleet 
+7		mixed snow and sleet 
+8		freezing drizzle 
+9 		drizzle 
+10 		freezing rain 
+11 		showers 
+12 		showers 
+13 		snow flurries 
+14 		light snow showers 
+15 		blowing snow 
+16 		snow 
+17 		hail 
+18 		sleet 
+19 		dust 
+20 		foggy 
+21 		haze 
+22 		smoky 
+23 		blustery 
+24 		windy 
+25 		cold 
+26 		cloudy 
+27 		mostly cloudy (night) 
+28 		mostly cloudy (day) 
+29 		partly cloudy (night) 
+30 		partly cloudy (day) 
+31 		clear (night) 
+32 		sunny 
+33 		fair (night) 
+34 		fair (day) 
+35 		mixed rain and hail 
+36 		hot 
+37 		isolated thunderstorms 
+38 		scattered thunderstorms 
+39 		scattered thunderstorms 
+40 		scattered showers 
+41 		heavy snow 
+42 		scattered snow showers 
+43 		heavy snow 
+44 		partly cloudy 
+45 		thundershowers 
+46 		snow showers 
+47 		isolated thundershowers 
+3200 	not available 
+</documentation>
+<script>
+<![CDATA[
+
+NETWORK = 6001
+PORT 	= 80
+
+CONDITION   = "Weather Condition"
+WOEID 	    = "WOEID location"
+UNIT 	    = "Unit of Measure"
+POLL 	    = "Update Time (minutes)"
+DEBUG 	    = "Debug Mode"
+
+CODE 	    = "code"
+RISING 	    = "rising"
+
+-- Globals
+g_PollingTimer = nil
+g_DebugTimer   = nil
+
+weatherData = {
+	["chill"]       = 0,
+	["visibility"]  = 0,
+	["speed"]       = 0,
+	["direction"]   = 0,
+	["humidity"]    = 0,
+	["pressure"]    = 0,
+	["rising"]      = 0,
+	["code"]        = 0,
+	["temp"]        = 0,
+	["title"]       = 0,
+}
+
+displayProperties = {
+	["chill"] 	    = "Wind Chill",
+	["visibility"]  = "Visibility",
+	["speed"] 	    = "Wind Speed",
+	["direction"] 	= "Wind Direction",
+	["humidity"] 	= "Humidity",
+	["pressure"] 	= "Pressure",
+	["rising"]	    = "Pressure is",
+	["code"]  	    = "Weather Code",
+	["condition"]   = "Weather Condition",
+	["temp"]		= "Temperature",
+	["title"]		= "Location and Time",
+}
+
+weatherConditions = { 
+	"Tropical storm",
+	"Hurricane",
+	"Severe thunderstorms",
+	"Thunderstorms",
+	"Mixed rain and snow",
+	"Mixed rain and sleet",
+	"Mixed snow and sleet",
+	"Freezing drizzle",
+	"Drizzle",
+	"Freezing rain",
+	"Showers",
+	"Showers",
+	"Snow flurries",
+	"Light snow showers",
+	"Blowing snow",
+	"Snow",
+	"Hail",
+	"Sleet",
+	"Dust",
+	"Foggy",
+	"Haze",
+	"Smoky",
+	"Blustery",
+	"Windy",
+	"Cold",
+	"Cloudy",
+	"Mostly cloudy (night)",
+	"Mostly cloudy (day)",
+	"Partly cloudy (night)",
+	"Partly cloudy (day)",
+	"Clear (night)",
+	"Sunny",
+	"Fair (night)",
+	"Fair (day)",
+	"Mixed rain and hail",
+	"Hot",
+	"Isolated thunderstorms",
+	"Scattered thunderstorms",
+	"Scattered thunderstorms",
+	"Scattered showers",
+	"Heavy snow",
+	"Scattered snow showers",
+	"Heavy snow",
+	"Partly cloudy",
+	"Thundershowers",
+	"Snow showers",
+	"Isolated thundershowers",
+	[0] = "Tornado",
+	[3200] = "Not available",
+}
+
+weatherRising = {
+	[0] = "Steady",
+	[1] = "Rising",
+	[2] = "Falling",
+}
+
+function Init()
+	-- Create Variables
+	for k, v in pairs(weatherData) do
+		if (not Variables[k]) then
+			C4:AddVariable(k, v, "NUMBER", true, false)
+		end
+	end
+end
+
+function ReceivedAsync(ticketId, strData, responseCode, tHeaders)
+	dbg(string.format("ReceivedAsync[%s]: %s", ticketId, strData))
+	
+	for k, v in pairs(weatherData) do
+		local tempVal = ParseData(strData, k)
+        
+        -- Set property, table, and variable
+		Properties[displayProperties[k]] = tempVal
+		weatherData[k] = tempVal
+        C4:SetVariable(k, tostring(tempVal))
+        
+		OnPropertyChanged(displayProperties[k])
+		
+		if (tempVal ~= weatherData[k]) then
+			if (k == RISING) then
+				tempVal = weatherRising[tonumber(tempVal)] or "N/A"
+			end
+		end
+		
+		C4:UpdateProperty(displayProperties[k], tostring(tempVal))
+	end
+	
+	if(weatherData["code"] ~= "N/A" and weatherData["code"] ~= nil) then
+		weatherData["condition"] = weatherConditions[tonumber(weatherData["code"])]
+		C4:UpdateProperty(CONDITION, weatherData["condition"])
+	end
+	
+	for k, v in pairs(weatherData) do
+		dbg(displayProperties[k] .. ":" .. v)
+	end
+end
+
+function OnConnectionStatusChanged(idBinding, nPort, strStatus)
+	if (strStatus == "ONLINE") then
+		local query = "select%20wind%2C%20atmosphere%2C%20item.title%2C%20item.condition.code%2C%20item.condition.temp%20from%20weather.forecast%20where%20woeid%3D" .. Properties[WOEID] .. "%20and%20u%3D%22" .. Properties[UNIT] .. "%22"
+		C4:urlGet(string.format("http://query.yahooapis.com/v1/public/yql?q=%s", query))
+	end
+end
+
+function ParseData(strData, item)
+	return string.match(strData, string.format("%s=\"([A-Za-z,:- 0-9.]+)\"", item)) or 
+	string.match(strData, string.format("<%s>Conditions for (.+)</%s>", item, item)) or
+	"N/A"
+end
+
+function OnPropertyChanged(strName)
+    -- Save to persistant data
+	for k, v in pairs(Properties) do
+		if (k == strProperty) then
+			PersistData[k] = v	-- Set persistent data
+			dbg(string.format("OnPropertyChanged[\"%s\"] set to %s", strProperty, Properties[strProperty]))
+		end
+	end
+
+	if (strProperty == DEBUG) then
+        if (Properties[DEBUG] ~= 'Off') then
+			if(g_DebugTimer) then g_DebugTimer = C4:KillTimer(g_DebugTimer) end
+			g_DebugTimer = C4:AddTimer(15, "MINUTES")
+		else
+			OnTimerExpired(g_DebugTimer)
+        end	
+	elseif (strName == POLL) then
+		if (g_PollingTimer) then  g_PollingTimer = C4:KillTimer(g_PollingTimer) end
+		g_PollingTimer = C4:AddTimer(Properties[POLL], "MINUTES", true)
+	elseif (strName == WOEID or strName == UNIT) then
+		C4:NetConnect(NETWORK, PORT)
+	end
+end
+
+function OnTimerExpired(idTimer)
+	if (idTimer == g_PollingTimer) then
+		C4:NetConnect(NETWORK, PORT)
+	elseif (idTimer == g_DebugTimer) then
+		g_DebugTimer = C4:KillTimer(g_DebugTimer)
+	end
+end
+
+function OnDriverDestroyed()
+	C4:KillTimer(g_PollingTimer)
+	C4:KillTimer(g_DebugTimer)
+end
+
+function dbg(strData)
+	local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
+	
+	-- If debug contains print
+	if (string.find(Properties[DEBUG], "Print")) then
+		print(debugText)
+	end
+	
+	-- If debug contains log
+	if (string.find(Properties[DEBUG], "Log")) then
+		C4:ErrorLog(debugText)
+	end
+end
+
+
+-- Load persistent data into properties table
+if (PersistData ~= nil) then
+	for k, v in pairs(PersistData) do
+		Properties[k] = v	-- Set properties from persistent data
+		dbg(string.format("PERSIST: Property[\"%s\"] set to: %s.", k, v))
+	end
+end
+
+Init()
+
+Properties[DEBUG] = "Print"
+
+C4:CreateNetworkConnection (NETWORK, "127.0.0.1", "HTTP")
+C4:NetConnect(NETWORK, PORT)
+
+
+
+]]></script>
+    <properties>
+      <property>
+        <name>Debug Mode</name>
+        <type>LIST</type>
+        <readonly>False</readonly>
+        <default>Off</default>
+        <items>
+          <item>Off</item>
+          <item>Print</item>
+          <item>Log</item>
+          <item>Print and Log</item>
+        </items>
+      </property>
+      <property>
+        <name>Update Time (minutes)</name>
+        <type>RANGED_INTEGER</type>
+        <readonly>False</readonly>
+        <default>20</default>
+        <minimum>5</minimum>
+        <maximum>180</maximum>
+      </property>
+      <property>
+        <name>Unit of Measure</name>
+        <type>LIST</type>
+        <readonly>False</readonly>
+        <default>c</default>
+        <items>
+          <item>f</item>
+          <item>c</item>
+        </items>
+      </property>
+      <property>
+        <name>WOEID location</name>
+        <type>STRING</type>
+        <readonly>False</readonly>
+        <default>4118</default>
+      </property>
+      <property>
+        <name>Location and Time</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Temperature</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+	  <property>
+        <name>Humidity</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Pressure</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Pressure is</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Visibility</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Weather Code</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Weather Condition</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Wind Chill</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Wind Direction</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+      <property>
+        <name>Wind Speed</name>
+        <type>STRING</type>
+        <readonly>True</readonly>
+        <default />
+      </property>
+    </properties>
+  </config>
+</devicedata>
