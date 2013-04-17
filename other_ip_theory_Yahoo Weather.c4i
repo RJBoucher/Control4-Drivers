@@ -36,7 +36,8 @@
     <power_command_delay>0</power_command_delay>
     <power_delay>0</power_delay>
     <power_command_needed>False</power_command_needed>
-    <documentation>Use this following site to get WOEID for local weather station. This is not a ZIP code!!!
+    <documentation>
+Use this following site to get WOEID for local weather station. This is not a ZIP code!!!
 
 http://woeid.rosselliot.co.nz/lookup
 
@@ -46,8 +47,7 @@ http://developer.yahoo.com/weather
 
 barometric pressure state: steady (0), rising (1), or falling (2)
 
-
-Code		Description
+Code	Description
 
 0 		tornado 
 1 		tropical storm 
@@ -113,10 +113,6 @@ DEBUG 	    = "Debug Mode"
 
 CODE 	    = "code"
 RISING 	    = "rising"
-
--- Globals
-g_PollingTimer = nil
-g_DebugTimer   = nil
 
 weatherData = {
 	["chill"]       = 0,
@@ -274,7 +270,7 @@ function OnPropertyChanged(strName)
 			OnTimerExpired(g_DebugTimer)
         end	
 	elseif (strName == POLL) then
-		if (g_PollingTimer) then  g_PollingTimer = C4:KillTimer(g_PollingTimer) end
+		if (g_PollingTimer) then g_PollingTimer = C4:KillTimer(g_PollingTimer) end
 		g_PollingTimer = C4:AddTimer(Properties[POLL], "MINUTES", true)
 	elseif (strName == WOEID or strName == UNIT) then
 		C4:NetConnect(NETWORK, PORT)
@@ -317,14 +313,14 @@ if (PersistData ~= nil) then
 	end
 end
 
-Init()
+-- Globals
+g_PollingTimer = C4:AddTimer(Properties[POLL], "MINUTES", true)
+g_DebugTimer   = nil
 
-Properties[DEBUG] = "Print"
+Init()
 
 C4:CreateNetworkConnection (NETWORK, "127.0.0.1", "HTTP")
 C4:NetConnect(NETWORK, PORT)
-
-
 
 ]]></script>
     <properties>
