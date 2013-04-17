@@ -137,7 +137,7 @@ displayProperties = {
 	["direction"] 	= "Wind Direction",
 	["humidity"] 	= "Humidity",
 	["pressure"] 	= "Pressure",
-	["rising"]	    = "Pressure is",
+	["rising"]	    = "Pressure Status",
 	["code"]  	    = "Weather Code",
 	["condition"]   = "Weather Condition",
 	["temp"]		= "Temperature",
@@ -384,7 +384,7 @@ RequestData()
         <default />
       </property>
       <property>
-        <name>Pressure is</name>
+        <name>Pressure Status</name>
         <type>STRING</type>
         <readonly>True</readonly>
         <default />
