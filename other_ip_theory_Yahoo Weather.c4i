@@ -7,7 +7,7 @@
   <model>Yahoo Weather</model>
   <created>04/15/2013 05:46 PM</created>
   <modified>04/16/2013 11:41 AM</modified>
-  <version>1</version>
+  <version>11</version>
   <small>devices_sm\receiver.gif</small>
   <large>devices_lg\receiver.gif</large>
   <top>
@@ -46,6 +46,9 @@ Documentation for Yahoo Weather API
 http://developer.yahoo.com/weather
 
 barometric pressure state: steady (0), rising (1), or falling (2)
+
+Version 1.0 -> 1.1
+- Removed useless connection. (Thanks to Ryan E)
 
 Code	Description
 
@@ -208,6 +211,11 @@ function Init()
 	end
 end
 
+function RequestData()
+    local query = "select%20wind%2C%20atmosphere%2C%20item.title%2C%20item.condition.code%2C%20item.condition.temp%20from%20weather.forecast%20where%20woeid%3D" .. Properties[WOEID] .. "%20and%20u%3D%22" .. Properties[UNIT] .. "%22"
+	C4:urlGet(string.format("http://query.yahooapis.com/v1/public/yql?q=%s", query))
+end
+
 function ReceivedAsync(ticketId, strData, responseCode, tHeaders)
 	dbg(string.format("ReceivedAsync[%s]: %s", ticketId, strData))
 	
@@ -240,13 +248,6 @@ function ReceivedAsync(ticketId, strData, responseCode, tHeaders)
 	end
 end
 
-function OnConnectionStatusChanged(idBinding, nPort, strStatus)
-	if (strStatus == "ONLINE") then
-		local query = "select%20wind%2C%20atmosphere%2C%20item.title%2C%20item.condition.code%2C%20item.condition.temp%20from%20weather.forecast%20where%20woeid%3D" .. Properties[WOEID] .. "%20and%20u%3D%22" .. Properties[UNIT] .. "%22"
-		C4:urlGet(string.format("http://query.yahooapis.com/v1/public/yql?q=%s", query))
-	end
-end
-
 function ParseData(strData, item)
 	return string.match(strData, string.format("%s=\"([A-Za-z,:- 0-9.]+)\"", item)) or 
 	string.match(strData, string.format("<%s>Conditions for (.+)</%s>", item, item)) or
@@ -273,13 +274,13 @@ function OnPropertyChanged(strName)
 		if (g_PollingTimer) then g_PollingTimer = C4:KillTimer(g_PollingTimer) end
 		g_PollingTimer = C4:AddTimer(Properties[POLL], "MINUTES", true)
 	elseif (strName == WOEID or strName == UNIT) then
-		C4:NetConnect(NETWORK, PORT)
+        RequestData()
 	end
 end
 
 function OnTimerExpired(idTimer)
 	if (idTimer == g_PollingTimer) then
-		C4:NetConnect(NETWORK, PORT)
+        RequestData()
 	elseif (idTimer == g_DebugTimer) then
 		g_DebugTimer = C4:KillTimer(g_DebugTimer)
 	end
@@ -318,9 +319,7 @@ g_PollingTimer = C4:AddTimer(Properties[POLL], "MINUTES", true)
 g_DebugTimer   = nil
 
 Init()
-
-C4:CreateNetworkConnection (NETWORK, "127.0.0.1", "HTTP")
-C4:NetConnect(NETWORK, PORT)
+RequestData()
 
 ]]></script>
     <properties>
