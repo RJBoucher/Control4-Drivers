@@ -255,14 +255,6 @@ function ParseData(strData, item)
 end
 
 function OnPropertyChanged(strName)
-    -- Save to persistant data
-	for k, v in pairs(Properties) do
-		if (k == strProperty) then
-			PersistData[k] = v	-- Set persistent data
-			dbg(string.format("OnPropertyChanged[\"%s\"] set to %s", strProperty, Properties[strProperty]))
-		end
-	end
-
 	if (strProperty == DEBUG) then
         if (Properties[DEBUG] ~= 'Off') then
 			if(g_DebugTimer) then g_DebugTimer = C4:KillTimer(g_DebugTimer) end
@@ -302,15 +294,6 @@ function dbg(strData)
 	-- If debug contains log
 	if (string.find(Properties[DEBUG], "Log")) then
 		C4:ErrorLog(debugText)
-	end
-end
-
-
--- Load persistent data into properties table
-if (PersistData ~= nil) then
-	for k, v in pairs(PersistData) do
-		Properties[k] = v	-- Set properties from persistent data
-		dbg(string.format("PERSIST: Property[\"%s\"] set to: %s.", k, v))
 	end
 end
 
