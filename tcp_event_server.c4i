@@ -1,0 +1,628 @@
+<devicedata>
+<copyright>Copyright 2013 THEORY.  All rights reserved.</copyright>
+<manufacturer>THEORY</manufacturer>
+<creator>Ryan Boucher</creator>
+<created>4/12/2013 3:30 PM</created>
+<modified>4/17/2013 8:00 PM</modified>
+<name>TCP Event Server</name>
+<model>TCP Event Server</model>
+<version>10</version>
+<small>devices_sm/c4.gif</small>
+<large>devices_lg/c4.gif</large>
+<control>lua_gen</control>
+<proxy>tcp_event_server</proxy>
+<driver>DriverWorks</driver>
+<events>
+    <event>
+        <id>1</id>
+        <name>Event1</name>
+        <description>Event 1</description>
+    </event>
+    <event>
+        <id>2</id>
+        <name>Event2</name>
+        <description>Event 2</description>
+    </event>
+    <event>
+        <id>3</id>
+        <name>Event3</name>
+        <description>Event 3</description>
+    </event>
+    <event>
+        <id>4</id>
+        <name>Event4</name>
+        <description>Event 4</description>
+    </event>
+    <event>
+        <id>5</id>
+        <name>Event5</name>
+        <description>Event 5</description>
+    </event>
+    <event>
+        <id>6</id>
+        <name>Event6</name>
+        <description>Event 6</description>
+    </event>
+    <event>
+        <id>7</id>
+        <name>Event7</name>
+        <description>Event 7</description>
+    </event>
+    <event>
+        <id>8</id>
+        <name>Event8</name>
+        <description>Event 8</description>
+    </event>
+    <event>
+        <id>9</id>
+        <name>Event9</name>
+        <description>Event 9</description>
+    </event>
+    <event>
+        <id>10</id>
+        <name>Event10</name>
+        <description>Event 10</description>
+    </event>
+    <event>
+        <id>11</id>
+        <name>Event11</name>
+        <description>Event 11</description>
+    </event>
+    <event>
+        <id>12</id>
+        <name>Event12</name>
+        <description>Event 12</description>
+    </event>
+    <event>
+        <id>13</id>
+        <name>Event13</name>
+        <description>Event 13</description>
+    </event>
+    <event>
+        <id>14</id>
+        <name>Event14</name>
+        <description>Event 14</description>
+    </event>
+    <event>
+        <id>15</id>
+        <name>Event15</name>
+        <description>Event 15</description>
+    </event>
+    <event>
+        <id>16</id>
+        <name>Event16</name>
+        <description>Event 16</description>
+    </event>
+    <event>
+        <id>17</id>
+        <name>Event17</name>
+        <description>Event 17</description>
+    </event>
+    <event>
+        <id>18</id>
+        <name>Event18</name>
+        <description>Event 18</description>
+    </event>
+    <event>
+        <id>19</id>
+        <name>Event19</name>
+        <description>Event 19</description>
+    </event>
+    <event>
+        <id>20</id>
+        <name>Event20</name>
+        <description>Event 20</description>
+    </event>
+    <event>
+        <id>21</id>
+        <name>Event21</name>
+        <description>Event 21</description>
+    </event>
+    <event>
+        <id>22</id>
+        <name>Event22</name>
+        <description>Event 22</description>
+    </event>
+    <event>
+        <id>23</id>
+        <name>Event23</name>
+        <description>Event 23</description>
+    </event>
+    <event>
+        <id>24</id>
+        <name>Event24</name>
+        <description>Event 24</description>
+    </event>
+    <event>
+        <id>25</id>
+        <name>Event25</name>
+        <description>Event 25</description>
+    </event>
+    <event>
+        <id>26</id>
+        <name>Event26</name>
+        <description>Event 26</description>
+    </event>
+    <event>
+        <id>27</id>
+        <name>Event27</name>
+        <description>Event 27</description>
+    </event>
+    <event>
+        <id>28</id>
+        <name>Event28</name>
+        <description>Event 28</description>
+    </event>
+    <event>
+        <id>29</id>
+        <name>Event29</name>
+        <description>Event 29</description>
+    </event>
+    <event>
+        <id>30</id>
+        <name>Event30</name>
+        <description>Event 30</description>
+    </event>
+    <event>
+        <id>31</id>
+        <name>Event31</name>
+        <description>Event 31</description>
+    </event>
+    <event>
+        <id>32</id>
+        <name>Event32</name>
+        <description>Event 32</description>
+    </event>
+    <event>
+        <id>33</id>
+        <name>Event33</name>
+        <description>Event 33</description>
+    </event>
+    <event>
+        <id>34</id>
+        <name>Event34</name>
+        <description>Event 34</description>
+    </event>
+    <event>
+        <id>35</id>
+        <name>Event35</name>
+        <description>Event 35</description>
+    </event>
+    <event>
+        <id>36</id>
+        <name>Event36</name>
+        <description>Event 36</description>
+    </event>
+    <event>
+        <id>37</id>
+        <name>Event37</name>
+        <description>Event 37</description>
+    </event>
+    <event>
+        <id>38</id>
+        <name>Event38</name>
+        <description>Event 38</description>
+    </event>
+    <event>
+        <id>39</id>
+        <name>Event39</name>
+        <description>Event 39</description>
+    </event>
+    <event>
+        <id>40</id>
+        <name>Event40</name>
+        <description>Event 40</description>
+    </event>
+    <event>
+        <id>41</id>
+        <name>Event41</name>
+        <description>Event 41</description>
+    </event>
+    <event>
+        <id>42</id>
+        <name>Event42</name>
+        <description>Event 42</description>
+    </event>
+    <event>
+        <id>43</id>
+        <name>Event43</name>
+        <description>Event 43</description>
+    </event>
+    <event>
+        <id>44</id>
+        <name>Event44</name>
+        <description>Event 44</description>
+    </event>
+    <event>
+        <id>45</id>
+        <name>Event45</name>
+        <description>Event 45</description>
+    </event>
+    <event>
+        <id>46</id>
+        <name>Event46</name>
+        <description>Event 46</description>
+    </event>
+    <event>
+        <id>47</id>
+        <name>Event47</name>
+        <description>Event 47</description>
+    </event>
+    <event>
+        <id>48</id>
+        <name>Event48</name>
+        <description>Event 48</description>
+    </event>
+    <event>
+        <id>49</id>
+        <name>Event49</name>
+        <description>Event 49</description>
+    </event>
+    <event>
+        <id>50</id>
+        <name>Event50</name>
+        <description>Event 50</description>
+    </event>
+    <event>
+        <id>51</id>
+        <name>Event51</name>
+        <description>Event 51</description>
+    </event>
+    <event>
+        <id>52</id>
+        <name>Event52</name>
+        <description>Event 52</description>
+    </event>
+    <event>
+        <id>53</id>
+        <name>Event53</name>
+        <description>Event 53</description>
+    </event>
+    <event>
+        <id>54</id>
+        <name>Event54</name>
+        <description>Event 54</description>
+    </event>
+    <event>
+        <id>55</id>
+        <name>Event55</name>
+        <description>Event 55</description>
+    </event>
+    <event>
+        <id>56</id>
+        <name>Event56</name>
+        <description>Event 56</description>
+    </event>
+    <event>
+        <id>57</id>
+        <name>Event57</name>
+        <description>Event 57</description>
+    </event>
+    <event>
+        <id>58</id>
+        <name>Event58</name>
+        <description>Event 58</description>
+    </event>
+    <event>
+        <id>59</id>
+        <name>Event59</name>
+        <description>Event 59</description>
+    </event>
+    <event>
+        <id>60</id>
+        <name>Event60</name>
+        <description>Event 60</description>
+    </event>
+    <event>
+        <id>61</id>
+        <name>Event61</name>
+        <description>Event 61</description>
+    </event>
+    <event>
+        <id>62</id>
+        <name>Event62</name>
+        <description>Event 62</description>
+    </event>
+    <event>
+        <id>63</id>
+        <name>Event63</name>
+        <description>Event 63</description>
+    </event>
+    <event>
+        <id>64</id>
+        <name>Event64</name>
+        <description>Event 64</description>
+    </event>
+    <event>
+        <id>65</id>
+        <name>Event65</name>
+        <description>Event 65</description>
+    </event>
+    <event>
+        <id>66</id>
+        <name>Event66</name>
+        <description>Event 66</description>
+    </event>
+    <event>
+        <id>67</id>
+        <name>Event67</name>
+        <description>Event 67</description>
+    </event>
+    <event>
+        <id>68</id>
+        <name>Event68</name>
+        <description>Event 68</description>
+    </event>
+    <event>
+        <id>69</id>
+        <name>Event69</name>
+        <description>Event 69</description>
+    </event>
+    <event>
+        <id>70</id>
+        <name>Event70</name>
+        <description>Event 70</description>
+    </event>
+    <event>
+        <id>71</id>
+        <name>Event71</name>
+        <description>Event 71</description>
+    </event>
+    <event>
+        <id>72</id>
+        <name>Event72</name>
+        <description>Event 72</description>
+    </event>
+    <event>
+        <id>73</id>
+        <name>Event73</name>
+        <description>Event 73</description>
+    </event>
+    <event>
+        <id>74</id>
+        <name>Event74</name>
+        <description>Event 74</description>
+    </event>
+    <event>
+        <id>75</id>
+        <name>Event75</name>
+        <description>Event 75</description>
+    </event>
+    <event>
+        <id>76</id>
+        <name>Event76</name>
+        <description>Event 76</description>
+    </event>
+    <event>
+        <id>77</id>
+        <name>Event77</name>
+        <description>Event 77</description>
+    </event>
+    <event>
+        <id>78</id>
+        <name>Event78</name>
+        <description>Event 78</description>
+    </event>
+    <event>
+        <id>79</id>
+        <name>Event79</name>
+        <description>Event 79</description>
+    </event>
+    <event>
+        <id>80</id>
+        <name>Event80</name>
+        <description>Event 80</description>
+    </event>
+    <event>
+        <id>81</id>
+        <name>Event81</name>
+        <description>Event 81</description>
+    </event>
+    <event>
+        <id>82</id>
+        <name>Event82</name>
+        <description>Event 82</description>
+    </event>
+    <event>
+        <id>83</id>
+        <name>Event83</name>
+        <description>Event 83</description>
+    </event>
+    <event>
+        <id>84</id>
+        <name>Event84</name>
+        <description>Event 84</description>
+    </event>
+    <event>
+        <id>85</id>
+        <name>Event85</name>
+        <description>Event 85</description>
+    </event>
+    <event>
+        <id>86</id>
+        <name>Event86</name>
+        <description>Event 86</description>
+    </event>
+    <event>
+        <id>87</id>
+        <name>Event87</name>
+        <description>Event 87</description>
+    </event>
+    <event>
+        <id>88</id>
+        <name>Event88</name>
+        <description>Event 88</description>
+    </event>
+    <event>
+        <id>89</id>
+        <name>Event89</name>
+        <description>Event 89</description>
+    </event>
+    <event>
+        <id>90</id>
+        <name>Event90</name>
+        <description>Event 90</description>
+    </event>
+    <event>
+        <id>91</id>
+        <name>Event91</name>
+        <description>Event 91</description>
+    </event>
+    <event>
+        <id>92</id>
+        <name>Event92</name>
+        <description>Event 92</description>
+    </event>
+    <event>
+        <id>93</id>
+        <name>Event93</name>
+        <description>Event 93</description>
+    </event>
+    <event>
+        <id>94</id>
+        <name>Event94</name>
+        <description>Event 94</description>
+    </event>
+    <event>
+        <id>95</id>
+        <name>Event95</name>
+        <description>Event 95</description>
+    </event>
+    <event>
+        <id>96</id>
+        <name>Event96</name>
+        <description>Event 96</description>
+    </event>
+    <event>
+        <id>97</id>
+        <name>Event97</name>
+        <description>Event 97</description>
+    </event>
+    <event>
+        <id>98</id>
+        <name>Event98</name>
+        <description>Event 98</description>
+    </event>
+    <event>
+        <id>99</id>
+        <name>Event99</name>
+        <description>Event 99</description>
+    </event>
+    <event>
+        <id>100</id>
+        <name>Event100</name>
+        <description>Event 100</description>
+    </event>
+</events>
+<config>
+<documentation> 
+    Default port for Siri proxy is "8373"
+</documentation>
+<properties>
+	<property>
+		<name>Debug Mode</name>
+		<type>LIST</type>
+		<items>
+			<item>Off</item>
+			<item>Print</item>
+			<item>Log</item>
+			<item>Print and Log</item>
+		</items>
+		<default>Off</default>
+		<readonly>false</readonly>
+	</property>
+	<property>
+		<name>Connection Status</name>
+		<type>STRING</type>
+		<default>Not Connected</default>
+		<readonly>true</readonly>
+	</property>
+	<property>
+		<name>Port</name>
+		<type>STRING</type>
+		<default>8373</default>
+		<readonly>false</readonly>
+	</property>
+    <property>
+		<name>Driver Version</name>
+		<type>STRING</type>
+		<default>1.0</default>
+		<readonly>true</readonly>
+	</property>
+</properties>
+<script>
+			
+-- Constants
+DEBUG   = "Debug Mode"
+PORT    = "Port"
+STATUS  = "Connection Status"
+
+function OnServerDataIn(nHandle, strData)
+	dbg(strData)
+    
+    local eventNumber, eventString = string.match (strData, "EVENT(%d+)", 1)
+    
+    if (eventNumber ~= nil) then
+        C4:FireEvent(string.format("Event%s", eventNumber))
+    end
+end
+
+function OnServerConnectionStatusChanged(nHandle,nPort,strStatus)
+    dbg(string.format("OnServerConnectionStatusChanged[%s:%s]: %s", nHandle, nPort, strStatus))
+    C4:UpdateProperty("Connection status", strStatus == "FALSE" and "Not Connected" or "Connected")
+end
+
+function OnPropertyChanged(strProperty) 
+	if (strProperty == DEBUG) then
+        if (Properties[DEBUG] ~= 'Off') then
+			if (g_DebugTimer) then g_DebugTimer = C4:KillTimer(g_DebugTimer) end
+			g_DebugTimer = C4:AddTimer(15, "MINUTES")
+		else
+			OnTimerExpired(g_DebugTimer)
+        end
+	end
+    
+    if (strProperty == PORT) then
+        C4:DestroyServer(g_PreviousPort)
+        C4:CreateServer(Properties[PORT])
+        g_PreviousPort = Properties[PORT]
+    end
+end
+
+function OnTimerExpired(idTimer)
+	if (idTimer == g_DebugTimer) then
+		dbg("Turning Debug Mode Off (timer expired)")
+		C4:UpdateProperty(DEBUG, "Off")
+	end
+	
+	C4:KillTimer(idTimer)
+end
+
+function OnDriverDestroyed()
+	C4:DestroyServer(g_PreviousPort)
+end
+
+function dbg(strData)
+	local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
+	
+	-- If debug contains print
+	if (string.find(Properties[DEBUG], "Print")) then
+		print(debugText)
+	end
+	
+	-- If debug contains log
+	if (string.find(Properties[DEBUG], "Log")) then
+		C4:ErrorLog(debugText)
+	end
+end		
+
+-- Create server
+C4:CreateServer(Properties[PORT])
+
+-- Global Variables
+g_DebugTimer    = 0
+g_PreviousPort  = Properties[PORT]
+						
+</script>
+</config>
+</devicedata>
