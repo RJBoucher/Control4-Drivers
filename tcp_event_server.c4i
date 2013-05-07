@@ -6,7 +6,7 @@
 <modified>4/17/2013 8:00 PM</modified>
 <name>TCP Event Server</name>
 <model>TCP Event Server</model>
-<version>10</version>
+<version>11</version>
 <small>devices_sm/c4.gif</small>
 <large>devices_lg/c4.gif</large>
 <control>lua_gen</control>
@@ -546,7 +546,7 @@
     <property>
 		<name>Driver Version</name>
 		<type>STRING</type>
-		<default>1.0</default>
+		<default>1.1</default>
 		<readonly>true</readonly>
 	</property>
 </properties>
@@ -576,7 +576,7 @@ end
 function OnPropertyChanged(strProperty) 
     if (strProperty == DEBUG) then
         if (Properties[DEBUG] ~= 'Off') then
-	        if (g_DebugTimer) then 
+            if (g_DebugTimer) then 
                 g_DebugTimer = C4:KillTimer(g_DebugTimer) 
             end
             g_DebugTimer = C4:AddTimer(15, "MINUTES")
