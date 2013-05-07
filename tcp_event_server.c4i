@@ -558,12 +558,13 @@ PORT    = "Port"
 STATUS  = "Connection Status"
 
 function OnServerDataIn(nHandle, strData)
-	dbg(strData)
+    dbg(strData)
     
-    local eventNumber, eventString = string.match (strData, "EVENT(%d+)", 1)
+    local eventNumber = string.match (strData, "EVENT(%d+)", 1)
     
     if (eventNumber ~= nil) then
-        C4:FireEvent(string.format("Event%s", eventNumber))
+        dbg (string.format("Firing event: 'Event%d'", eventNumber))
+        C4:FireEvent(string.format("Event%d", eventNumber))
     end
 end
 
@@ -573,14 +574,16 @@ function OnServerConnectionStatusChanged(nHandle,nPort,strStatus)
 end
 
 function OnPropertyChanged(strProperty) 
-	if (strProperty == DEBUG) then
+    if (strProperty == DEBUG) then
         if (Properties[DEBUG] ~= 'Off') then
-			if (g_DebugTimer) then g_DebugTimer = C4:KillTimer(g_DebugTimer) end
-			g_DebugTimer = C4:AddTimer(15, "MINUTES")
-		else
-			OnTimerExpired(g_DebugTimer)
+	        if (g_DebugTimer) then 
+                g_DebugTimer = C4:KillTimer(g_DebugTimer) 
+            end
+            g_DebugTimer = C4:AddTimer(15, "MINUTES")
+        else
+            OnTimerExpired(g_DebugTimer)
         end
-	end
+    end
     
     if (strProperty == PORT) then
         C4:DestroyServer(g_PreviousPort)
@@ -590,30 +593,30 @@ function OnPropertyChanged(strProperty)
 end
 
 function OnTimerExpired(idTimer)
-	if (idTimer == g_DebugTimer) then
-		dbg("Turning Debug Mode Off (timer expired)")
-		C4:UpdateProperty(DEBUG, "Off")
-	end
-	
-	C4:KillTimer(idTimer)
+    if (idTimer == g_DebugTimer) then
+        dbg("Turning Debug Mode Off (timer expired)")
+        C4:UpdateProperty(DEBUG, "Off")
+    end
+    
+    C4:KillTimer(idTimer)
 end
 
 function OnDriverDestroyed()
-	C4:DestroyServer(g_PreviousPort)
+    C4:DestroyServer(g_PreviousPort)
 end
 
 function dbg(strData)
-	local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
-	
-	-- If debug contains print
-	if (string.find(Properties[DEBUG], "Print")) then
-		print(debugText)
-	end
-	
-	-- If debug contains log
-	if (string.find(Properties[DEBUG], "Log")) then
-		C4:ErrorLog(debugText)
-	end
+    local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
+    
+    -- If debug contains print
+    if (string.find(Properties[DEBUG], "Print")) then
+        print(debugText)
+    end
+    
+    -- If debug contains log
+    if (string.find(Properties[DEBUG], "Log")) then
+        C4:ErrorLog(debugText)
+    end
 end		
 
 -- Create server
