@@ -37,70 +37,89 @@
     <power_delay>0</power_delay>
     <power_command_needed>False</power_command_needed>
     <documentation>
-Use this following site to get WOEID for local weather station. This is not a ZIP code!!!
+    
+    Copyright (C) 2013 Ryan Boucher
 
-http://woeid.rosselliot.co.nz/lookup
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-Documentation for Yahoo Weather API
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-http://developer.yahoo.com/weather
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.    
 
-barometric pressure state: steady (0), rising (1), or falling (2)
-
-Version 1.0 -> 1.1
-- Removed useless connection. (Thanks to Ryan E)
-
-Code	Description
-
-0 		tornado 
-1 		tropical storm 
-2 		hurricane 
-3 		severe thunderstorms 
-4 		thunderstorms 
-5 		mixed rain and snow 
-6 		mixed rain and sleet 
-7		mixed snow and sleet 
-8		freezing drizzle 
-9 		drizzle 
-10 		freezing rain 
-11 		showers 
-12 		showers 
-13 		snow flurries 
-14 		light snow showers 
-15 		blowing snow 
-16 		snow 
-17 		hail 
-18 		sleet 
-19 		dust 
-20 		foggy 
-21 		haze 
-22 		smoky 
-23 		blustery 
-24 		windy 
-25 		cold 
-26 		cloudy 
-27 		mostly cloudy (night) 
-28 		mostly cloudy (day) 
-29 		partly cloudy (night) 
-30 		partly cloudy (day) 
-31 		clear (night) 
-32 		sunny 
-33 		fair (night) 
-34 		fair (day) 
-35 		mixed rain and hail 
-36 		hot 
-37 		isolated thunderstorms 
-38 		scattered thunderstorms 
-39 		scattered thunderstorms 
-40 		scattered showers 
-41 		heavy snow 
-42 		scattered snow showers 
-43 		heavy snow 
-44 		partly cloudy 
-45 		thundershowers 
-46 		snow showers 
-47 		isolated thundershowers 
-3200 	not available 
+Changes:
+    Version 1.0 -> 1.1
+    - Removed useless connection. (Thanks to Ryan E)
+    
+Overview:
+    Provides the user with up to date weather information to include in their Control4 programming
+    
+Note:
+    Use this following site to get WOEID for local weather station. This is not a ZIP code!!!
+    http://woeid.rosselliot.co.nz/lookup
+    
+    Documentation for Yahoo Weather API
+    http://developer.yahoo.com/weather
+    
+    Barometric pressure state: steady (0), rising (1), or falling (2)
+    
+    Code	Description
+    
+    0 		tornado 
+    1 		tropical storm 
+    2 		hurricane 
+    3 		severe thunderstorms 
+    4 		thunderstorms 
+    5 		mixed rain and snow 
+    6 		mixed rain and sleet 
+    7		mixed snow and sleet 
+    8		freezing drizzle 
+    9 		drizzle 
+    10 		freezing rain 
+    11 		showers 
+    12 		showers 
+    13 		snow flurries 
+    14 		light snow showers 
+    15 		blowing snow 
+    16 		snow 
+    17 		hail 
+    18 		sleet 
+    19 		dust 
+    20 		foggy 
+    21 		haze 
+    22 		smoky 
+    23 		blustery 
+    24 		windy 
+    25 		cold 
+    26 		cloudy 
+    27 		mostly cloudy (night) 
+    28 		mostly cloudy (day) 
+    29 		partly cloudy (night) 
+    30 		partly cloudy (day) 
+    31 		clear (night) 
+    32 		sunny 
+    33 		fair (night) 
+    34 		fair (day) 
+    35 		mixed rain and hail 
+    36 		hot 
+    37 		isolated thunderstorms 
+    38 		scattered thunderstorms 
+    39 		scattered thunderstorms 
+    40 		scattered showers 
+    41 		heavy snow 
+    42 		scattered snow showers 
+    43 		heavy snow 
+    44 		partly cloudy 
+    45 		thundershowers 
+    46 		snow showers 
+    47 		isolated thundershowers 
+    3200 	not available 
 </documentation>
 <script>
 <![CDATA[
