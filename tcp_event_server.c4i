@@ -3,7 +3,7 @@
 <manufacturer>Ryan Boucher</manufacturer>
 <creator>Ryan Boucher</creator>
 <created>4/12/2013 3:30 PM</created>
-<modified>4/17/2013 8:00 PM</modified>
+<modified>6/03/2013 11:00 PM</modified>
 <name>TCP Event Server</name>
 <model>TCP Event Server</model>
 <version>11</version>
@@ -529,7 +529,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+    along with this program.  If not, see "http://www.gnu.org/licenses/". 
 
 Note:    
     Default port for Siri proxy is "8373"

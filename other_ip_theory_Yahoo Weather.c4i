@@ -6,7 +6,7 @@
   <name>Yahoo Weather Service</name>
   <model>Yahoo Weather</model>
   <created>04/15/2013 05:46 PM</created>
-  <modified>04/16/2013 11:41 AM</modified>
+  <modified>06/03/2013 11:00 PM</modified>
   <version>11</version>
   <small>devices_sm\receiver.gif</small>
   <large>devices_lg\receiver.gif</large>
@@ -51,7 +51,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.    
+    along with this program.  If not, see "http://www.gnu.org/licenses/".    
 
 Changes:
     Version 1.0 -> 1.1
