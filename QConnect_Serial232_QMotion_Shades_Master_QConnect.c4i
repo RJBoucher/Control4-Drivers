@@ -1,0 +1,310 @@
+<devicedata>
+   <copyright>Copyright 2012 Home Run Holdings.  All rights reserved.</copyright>
+   <manufacturer>QMotionShades</manufacturer>
+   <creator>Alfred</creator>
+   <created>1/26/2012 2:22:54 PM</created>
+   <modified>6/22/2013 2:10:00 PM</modified>
+   <name>QConnect</name>
+   <model>QConnect</model>
+   <version>100</version>
+   <small>devices_sm\c4.gif</small>
+   <large>devices_lg\c4.gif</large>
+   <control>lua_gen</control>
+   <controlmethod>Serial</controlmethod>
+   <front/><back/><top/><bottom/><left/><right/>
+   <combo>True</combo>
+   <OnlineCategory>others</OnlineCategory>
+   <proxies qty="1">
+       <proxy>other</proxy>
+   </proxies>
+   <driver>DriverWorks</driver>
+   <capabilities />
+   <connections>
+   
+        <connection>
+            <id>1</id>
+            <facing>6</facing>
+            <connectionname>Serial RS-232</connectionname>
+            <type>1</type>
+            <consumer>True</consumer>
+            <audiosource>False</audiosource>
+            <videosource>False</videosource>
+            <linelevel>False</linelevel>
+            <classes>
+                <class>
+                    <classname>RS_232</classname>
+                </class>
+            </classes>
+        </connection>
+      
+        <connection>
+            <id>2</id>
+            <facing>6</facing>
+            <type>1</type>
+            <connectionname>Shade Link</connectionname>
+            <consumer>False</consumer>
+            <classes>
+                <class>
+                    <classname>QMOTION_SHADE_LINK</classname>
+                </class>
+            </classes>
+        </connection>
+      
+   </connections>
+   <config>
+      <serialsettings>9600 8 none 1 none</serialsettings>
+      <properties>
+         <property>
+            <name>Debug Mode</name>
+            <type>LIST</type>
+            <items>
+               <item>Off</item>
+               <item>Print</item>
+               <item>Log</item>
+               <item>Print and Log</item>
+            </items>
+            <default>Off</default>
+            <readonly>false</readonly>
+         </property>
+      
+         <property>
+            <name>Bridge ID</name>
+            <type>LIST</type>
+            <items>
+               <item>1</item>
+               <item>2</item>
+               <item>3</item>
+               <item>4</item>
+               <item>5</item>
+               <item>6</item>
+               <item>7</item>
+               <item>8</item>
+               <item>9</item>
+               <item>10</item>
+               <item>11</item>
+               <item>12</item>
+               <item>13</item>
+               <item>14</item>
+               <item>15</item>
+            </items>
+            <default>1</default>
+         </property>
+
+      </properties>
+      <commands />
+	  <documentation>	
+ 
+June 22, 2013 
+- Modified by Ryan Boucher
+      
+-=QConnect driver for use with the QMotion QConnect product=-
+	  
+The QConnect is used to control QMotion Shades using your Control4 system, so that you can pair the movement of your shades with other events in the home. Such as lowering the shades in the entertainment room, dimming the lights, turning the stereo on and turning the TV on when starting a movie.
+
+First learn the QConnect to all shades, using the rotary switch to set which channel you want the shades to be learned to (shades can be learned to more than one channel). On a shade that hasn't been learned to a remote, simply tug the shade about three inches, then push and hold the up button on the QConnect while it is unplugged from power(The QConnect has an internal battery for learning shades). On a shade that has been learned to another remote, take the learned remote and send the shade to the top. After the shade has gone to the top push and hold the up button until the shade starts to move down to 75% closed, release the up button when it begins to move. When the shade gets to 75% tug the shade about 3 inches, then press and hold the up button on the unplugged QConnect until the shade begins to move up. After learning all of the shades to the desired channels, set the rotary dial to 0, and plug the QConnect into the wall using the supplied power adapter. The light should turn solid red and stay on. 
+	
+*When sending a command to the QConnect the light will turn off while the QConnect is transmitting a command to the shades, and turn back on when it is done transmitting*
+	
+To use the QConnect with a Blind Proxy:
+1. Make the proper system connections to the RS-232 port you have the QConnect connected to
+2. Select the appropriate Channel ID form the properties tab
+3. Set the command you would like to use in the Programming window (Open, Close, Preset (after learning the lower limit the default presets 1,2,3 are 25%,50%,75% respectively. These three positions can be custom set using a remote control and will automatically go to the new setpoints without altering the QConnect or this driver)
+4. Excute the scene
+
+To use the QConnect without the proxy
+1. Make the proper system connections to the RS-232 port you have the QConnect connected to
+2. In the programming window select the QConnect driver and scroll down the command tab to Device specific commands.
+3. Set the Channel ID and movement command and map it to the command you want to trigger the shades.
+4. Execute the scene
+*Note: The default setting for Toggle will send the shades down. Sending the shades to the open position at anytime will set the toggle to send them to the Closed position and a Close command will cause the toggle to send the shades to the Open position	
+
+When the Script activates the command will be sent by the controller to the QConnect through the serial connection, and the QConnect will transmit the command via RF to the shades that were learned to the selected channel.
+
+Debug set to Print will give the following information. The Channel ID, the command being sent and the String that is being sent to the QConnect.
+
+*Note: The QConnect cannot communicate over ethernet.
+	</documentation>
+      <script>
+     
+-- ===================================
+--              CONSTANTS
+-- ===================================
+-- Bindings
+ID_SERIAL       = 1
+ID_LINK         = 2
+
+-- Properties
+BRIDGE      = "Bridge ID"
+DEBUG       = "Debug Mode"
+
+-- Timers
+Timer = {}
+TIMER_DEBUG = "TimerDebug"
+
+-- Table serial commands
+T_O             = 1     -- Open
+T_C             = 2     -- Close
+T_PA            = 4     -- Preset A
+T_PB            = 8     -- Preset B
+T_PC            = 12    -- Preset C
+
+-- General
+CHANNEL         = "Channel"
+COMMAND         = "Command"
+SHADE_COMMAND   = "ShadeCommand"
+
+tChannel = {}
+tChannel[1]  = {[T_O] = 'fc', [T_C] = 'ff', [T_PA] = 'f9', [T_PB] = 'f5', [T_PC] = 'f1',}
+tChannel[2]  = {[T_O] = 'ff', [T_C] = 'fc', [T_PA] = 'fa', [T_PB] = 'f6', [T_PC] = 'f2',}
+tChannel[3]  = {[T_O] = 'fe', [T_C] = 'fd', [T_PA] = 'fb', [T_PB] = 'f7', [T_PC] = 'f3',}
+tChannel[4]  = {[T_O] = 'f9', [T_C] = 'fa', [T_PA] = 'fc', [T_PB] = 'f0', [T_PC] = 'f4',}
+tChannel[5]  = {[T_O] = 'f8', [T_C] = 'fb', [T_PA] = 'fd', [T_PB] = 'f1', [T_PC] = 'f5',}
+tChannel[6]  = {[T_O] = 'fb', [T_C] = 'f8', [T_PA] = 'fe', [T_PB] = 'f2', [T_PC] = 'f6',}
+tChannel[7]  = {[T_O] = 'fa', [T_C] = 'f9', [T_PA] = 'ff', [T_PB] = 'f3', [T_PC] = 'f7',}
+tChannel[8]  = {[T_O] = 'f5', [T_C] = 'f6', [T_PA] = 'f0', [T_PB] = 'fc', [T_PC] = 'f8',}
+tChannel[9]  = {[T_O] = 'f4', [T_C] = 'f7', [T_PA] = 'f1', [T_PB] = 'fd', [T_PC] = 'f9',}
+tChannel[10] = {[T_O] = 'f7', [T_C] = 'f4', [T_PA] = 'f2', [T_PB] = 'fe', [T_PC] = 'fa',}
+tChannel[11] = {[T_O] = 'f6', [T_C] = 'f5', [T_PA] = 'f3', [T_PB] = 'ff', [T_PC] = 'fb',}
+tChannel[12] = {[T_O] = 'f1', [T_C] = 'f2', [T_PA] = 'f4', [T_PB] = 'f8', [T_PC] = 'fc',}
+tChannel[13] = {[T_O] = 'f0', [T_C] = 'f3', [T_PA] = 'f5', [T_PB] = 'f9', [T_PC] = 'fd',}
+tChannel[14] = {[T_O] = 'f3', [T_C] = 'f0', [T_PA] = 'f6', [T_PB] = 'fa', [T_PC] = 'fe',}
+tChannel[15] = {[T_O] = 'f2', [T_C] = 'f1', [T_PA] = 'f7', [T_PB] = 'fb', [T_PC] = 'ff',}
+
+-- ===================================
+--              GLOBALS
+-- ===================================
+g_SerialData = ""
+
+-- ===================================
+--             FUNCTIONS
+-- ===================================
+
+-- Name: SendToSerial
+-- Description: Adds debug and ID for a simpler call to send serial data
+function SendToSerial(message)
+   dbg("SendToSerial: " .. message)
+   C4:SendToSerial(ID_SERIAL, message)
+end
+
+-- Name: ConstructMessage
+-- Description: Constructs a QMotion message
+-- TODO: If the end value in the table can be determined programatically, that should be done here. For now the table value will be used.
+function ConstructMessage(channelID, command)
+    local endValue = tChannel[channelID][command] 
+    local strMessage = string.format("01 07 00 05 01 %02x %02x 00 %s", channelID, command, endValue)
+end
+
+function ReceivedFromProxy(idBinding, strCommand, tParams)
+    dbg(string.format("ReceivedFromProxy[%s] Command: %s", idBinding, strCommand))
+
+    if (idBinding == ID_LINK) then
+        if (strCommand == SHADE_COMMAND) then
+            local strToSend = ConstructMessage(tParams[CHANNEL], tParams[COMMAND])
+            SendToSerial(strToSend)
+        end
+    end
+end
+
+-- Name: ReceivedFromSerial
+-- Description: Accumulates serial data from the binding
+function ReceivedFromSerial(idBinding, strData)
+    dbg(strData)
+    
+    -- Code to accumulate Serial Data
+    --g_SerialData = g_SerialData or ""
+    --g_SerialData = g_SerialData .. strData
+end
+
+
+
+-- Name: OnPropertyChanged
+-- Description: Called when a property from Control 4 is changed for the driver
+function OnPropertyChanged(strProperty)
+	dbg(string.format("OnPropertyChanged[%s] set to %s", strProperty, Properties[strProperty]))
+	
+    if (strProperty == DEBUG) then
+        if (Properties[DEBUG] ~= 'Off') then
+            Core.StartTimer(TIMER_DEBUG, 15, "MINUTES")
+        else
+			OnTimerExpired(Timers[TIMER_DEBUG])
+        end
+    end
+end
+
+-- Name: OnTimerExpired
+-- Description: Executes appropriate actions after timers have elapsed or expired.
+function OnTimerExpired(timer)
+    if(Timers[TIMER_DEBUG] == timer) then
+        dbg('Turning Debug Mode back to Off')
+        C4:UpdateProperty(DEBUG, 'Off')
+        Lib.KillTimer(TIMER_DEBUG)     
+    end
+end
+
+-- Name: dbg
+-- Description: Displays debug text if debugging is enabled
+-- Parameters:
+--        - strData: Text for debug
+function dbg(strData)
+	local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
+	
+	-- If debug contains print
+	if (string.find(Properties[DEBUG], "Print")) then
+		print(debugText)
+	end
+	
+	-- If debug contains log
+	if (string.find(Properties[DEBUG], "Log")) then
+		C4:ErrorLog(debugText)
+	end
+end
+
+
+-- Name: OnDriverDestroyed
+-- Description: Kills any active timers
+function OnDriverDestroyed()
+    Lib.KillAllTimers()
+end
+
+
+-- ===================================
+--              Library
+-- ===================================
+Lib = {}
+
+-- Name: StartTimer
+-- Description: Adds the timer onto the Timers table for easy management and creates a new timer
+function Lib.StartTimer(timerID, interval, unitType, bRepeat)
+    interval = tonumber(interval)
+    bRepeat = bRepeat or false
+    
+    Lib.KillTimer(timerID)
+    Timers[timerID] = C4:AddTimer(interval, unitType, bRepeat)
+end
+
+
+-- Name: KillTimer
+-- Description: Kills the provided timer
+function Lib.KillTimer(timerID)
+    if (Timers[timerID] ~= KILLED) then
+        Timers[timerID] = C4:KillTimer(Timers[timerID])
+    end
+end
+
+
+-- Name: KillAllTimers
+-- Description: Kills all timers running in the driver
+function Lib.KillAllTimers()
+    for k, _ in pairs(Timers) do
+        Lib.KillTimer(k)
+    end  
+end
+
+-- Init  
+for k, _ in pairs(Properties) do
+    OnPropertyChanged(k)
+end  
+  
+      </script>
+   </config>
+</devicedata>

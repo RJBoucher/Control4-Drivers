@@ -1,0 +1,340 @@
+<devicedata>
+   <copyright>Copyright 2012 Home Run Holdings.  All rights reserved.</copyright>
+   <manufacturer>QMotionShades</manufacturer>
+   <creator>Alfred</creator>
+   <created>1/26/2012 2:22:54 PM</created>
+   <modified>6/22/2013 2:22:00 PM</modified>
+   <name>QConnect</name>
+   <model>QConnect</model>
+   <version>100</version>
+   <small>devices_sm/Blinds.gif</small>
+   <large>devices_lg/Blinds.gif</large>
+   <control>lua_gen</control>
+   <front/><back/><top/><bottom/><left/><right/>
+   <capabilities>
+      <has_blinds>True</has_blinds>
+      <can_stop_blinds>False</can_stop_blinds>
+      <can_stop>False</can_stop>
+      <midpoints>7</midpoints>
+      <blinds_preset_count>3</blinds_preset_count>
+      <can_designate_level>False</can_designate_level>
+      <can_designate_blinds_level>False</can_designate_blinds_level>
+      <has_louvers>False</has_louvers>
+      <can_stop_louvers>False</can_stop_louvers>
+      <louvers_preset_count>0</louvers_preset_count>
+      <can_designate_louvers_level>False</can_designate_louvers_level>
+      <use_v2_proxy>True</use_v2_proxy>
+   </capabilities>
+   <proxy>blindV2</proxy>
+   <driver>DriverWorks</driver>
+   <connections>
+        <connection>
+            <id>1</id>
+            <facing>6</facing>
+            <type>1</type>
+            <connectionname>Shade Link</connectionname>
+            <consumer>True</consumer>
+            <classes>
+                <class>
+                    <classname>QMOTION_SHADE_LINK</classname>
+                </class>
+            </classes>
+        </connection>
+      
+	  <connection>
+         <id>5001</id>
+         <facing>6</facing>
+         <connectionname>Blinds</connectionname>
+         <type>2</type>
+         <consumer>False</consumer>
+         <audiosource>False</audiosource>
+         <videosource>False</videosource>
+         <linelevel>False</linelevel>
+         <classes>
+            <class>
+               <classname>BLIND</classname>
+            </class>
+         </classes>
+      </connection>
+      
+   </connections>
+   <config>
+      <properties>
+      
+         <property>
+            <name>Debug Mode</name>
+            <type>LIST</type>
+            <items>
+               <item>Off</item>
+               <item>Print</item>
+               <item>Log</item>
+               <item>Print and Log</item>
+            </items>
+            <default>Off</default>
+            <readonly>false</readonly>
+         </property>
+      
+		 <property>
+            <name>Channel</name>
+            <type>LIST</type>
+            <items>
+               <item>1</item>
+               <item>2</item>
+               <item>3</item>
+               <item>4</item>
+               <item>5</item>
+               <item>6</item>
+               <item>7</item>
+               <item>8</item>
+               <item>9</item>
+               <item>10</item>
+               <item>11</item>
+               <item>12</item>
+               <item>13</item>
+               <item>14</item>
+               <item>15</item>
+            </items>
+            <default>1</default>
+         </property>
+
+      </properties>
+      <commands/>
+	  <documentation>	
+      
+June 22, 2013 
+- Modified by Ryan Boucher      
+      
+-=QConnect driver for use with the QMotion QConnect product=-
+	  
+The QConnect is used to control QMotion Shades using your Control4 system, so that you can pair the movement of your shades with other events in the home. Such as lowering the shades in the entertainment room, dimming the lights, turning the stereo on and turning the TV on when starting a movie.
+
+First learn the QConnect to all shades, using the rotary switch to set which channel you want the shades to be learned to (shades can be learned to more than one channel). On a shade that hasn't been learned to a remote, simply tug the shade about three inches, then push and hold the up button on the QConnect while it is unplugged from power(The QConnect has an internal battery for learning shades). On a shade that has been learned to another remote, take the learned remote and send the shade to the top. After the shade has gone to the top push and hold the up button until the shade starts to move down to 75% closed, release the up button when it begins to move. When the shade gets to 75% tug the shade about 3 inches, then press and hold the up button on the unplugged QConnect until the shade begins to move up. After learning all of the shades to the desired channels, set the rotary dial to 0, and plug the QConnect into the wall using the supplied power adapter. The light should turn solid red and stay on. 
+	
+*When sending a command to the QConnect the light will turn off while the QConnect is transmitting a command to the shades, and turn back on when it is done transmitting*
+	
+To use the QConnect with a Blind Proxy:
+1. Make the proper system connections to the RS-232 port you have the QConnect connected to
+2. Select the appropriate Channel ID form the properties tab
+3. Set the command you would like to use in the Programming window (Open, Close, Preset (after learning the lower limit the default presets 1,2,3 are 25%,50%,75% respectively. These three positions can be custom set using a remote control and will automatically go to the new setpoints without altering the QConnect or this driver)
+4. Excute the scene
+
+To use the QConnect without the proxy
+1. Make the proper system connections to the RS-232 port you have the QConnect connected to
+2. In the programming window select the QConnect driver and scroll down the command tab to Device specific commands.
+3. Set the Channel ID and movement command and map it to the command you want to trigger the shades.
+4. Execute the scene
+*Note: The default setting for Toggle will send the shades down. Sending the shades to the open position at anytime will set the toggle to send them to the Closed position and a Close command will cause the toggle to send the shades to the Open position	
+
+When the Script activates the command will be sent by the controller to the QConnect through the serial connection, and the QConnect will transmit the command via RF to the shades that were learned to the selected channel.
+
+Debug set to Print will give the following information. The Channel ID, the command being sent and the String that is being sent to the QConnect.
+
+*Note: The QConnect cannot communicate over ethernet.
+	</documentation>
+      <script>
+     
+-- ===================================
+--              CONSTANTS
+-- ===================================
+-- Bindings
+ID_BLIND_PROXY  = 5001
+ID_LINK         = 1
+
+-- Properties
+CHANNEL = "Channel"
+DEBUG   = "Debug Mode"
+
+-- Timers
+Timer = {}
+TIMER_DEBUG = "TimerDebug"
+
+-- General
+COMMAND           = "Command"
+BLINDS_OPEN       = "bo"
+BLINDS_CLOSE      = "bc"
+--BLINDS_LEVEL    = "bv"
+BLINDS_PRESET     = "bp"
+BLINDS_TOGGLE     = "bt"
+--BLINDS_STOP     = "bs"
+--LOUVERS_OPEN    = "lo"
+--LOUVERS_CLOSE   = "lc"
+--LOUVERS_LEVEL   = "lv"
+--LOUVERS_TOGGLE  = "lt"
+
+-- Shade
+SHADE_COMMAND   = "ShadeCommand"
+OPEN            = 1
+CLOSE           = 2
+
+-- Presets
+Presets = { 4, 8, 12, }
+
+-- ===================================
+--              GLOBALS
+-- ===================================
+g_SerialData = ""
+g_PrevState  = 1 -- (1 or 2 == Open or Close)
+
+-- Commands that are commented out are not supported.
+CMDS = 
+{
+	["BLIND_OPEN"]			= "bo",
+	["BLINDS_OPEN"]			= "bo",
+	["UP"]					= "bo",
+	["BLIND_CLOSE"]			= "bc",
+	["BLINDS_CLOSE"]		= "bc",
+	["DOWN"]				= "bc",
+	--["BLIND_STOP"]		= "bs",
+	--["BLINDS_STOP"]		= "bs",
+	--["STOP"]				= "bs",
+	["BLINDS_GOTO_PRESET"]  = "bp",
+	["BLIND_GOTO_PRESET"]   = "bp",
+	--["BLINDS_GOTO_LEVEL"] = "bv",
+	--["BLIND_GOTO_LEVEL"]  = "bv",
+	["BLINDS_TOGGLE"]		= "bt",
+	["BLIND_TOGGLE"]        = "bt",
+	["TOGGLE"]		        = "bt",
+	--["LOUVER_TOGGLE"]		= "lt",
+	--["LOUVERS_TOGGLE"]	= "lt",
+	--["LOUVERS_GOTO_LEVEL"]= "lv",
+	--["LOUVER_GOTO_LEVEL"] = "lv",
+	--["LOUVERS_CLOSE"]		= "lc",
+	--["LOUVER_CLOSE"]		= "lc",
+	--["LOUVERS_OPEN"]      = "lo",
+	--["LOUVER_OPEN"]       = "lo",
+}
+
+-- Name: SendToMaster
+-- Description: Adds debug to the command being sent and applies the binding
+function SendToMaster(strCommand, tParams)
+    dbg("Sending to master: " .. strCommand)
+    C4:SendToProxy(ID_LINK, strCommand, tParams)
+end
+
+-- Name: ReceivedFromProxy
+-- Description: Receives information from the master driver as well as the Blinds proxy. Sends commands to the master driver based on blind commands.
+function ReceivedFromProxy(idBinding, strCommand, tParams)
+    dbg(string.format("ReceivedFromProxy[%s] Command: %s", idBinding, strCommand))
+
+    if (idBinding == ID_BLIND_PROXY) then
+        local cmd = CMDS[strCommand]
+        
+        if (cmd) then
+            local sendState = OPEN
+        
+            if (BLINDS_OPEN == cmd) then
+                sendState = OPEN
+            elseif (BLINDS_CLOSE == cmd) then
+                sendState = CLOSE
+            elseif (BlINDS_PRESET == cmd) then
+                sendState = Presets[tonumber(tParams["PRESET"])]
+            elseif (BLINDS_TOGGLE == cmd) then
+                g_PrevState = g_PrevState == 1 and 2 or 1
+                sendState = g_PrevState
+            end
+            
+            local shadeParams = {}
+            shadeParams[CHANNEL] = Properties[CHANNEL]
+            shadeParams[COMMAND] = sendState
+            
+            SendToMaster(SHADE_COMMAND, shadeParams)
+        end
+    elseif (idBinding == ID_LINK) then
+        if (tParams[CHANNEL] == Properties[CHANNEL]) then
+            dbg("ReceivedFromMaster: " .. strCommand)
+        end
+    end
+end
+
+
+-- Name: OnPropertyChanged
+-- Description: Called when a property from Control 4 is changed for the driver
+function OnPropertyChanged(strProperty)
+	dbg(string.format("OnPropertyChanged[%s] set to %s", strProperty, Properties[strProperty]))
+	
+    if (strProperty == DEBUG) then
+        if (Properties[DEBUG] ~= 'Off') then
+            Lib.StartTimer(TIMER_DEBUG, 15, "MINUTES")
+        else
+			OnTimerExpired(Timers[TIMER_DEBUG])
+        end
+    end
+end
+
+-- Name: OnTimerExpired
+-- Description: Executes appropriate actions after timers have elapsed or expired.
+function OnTimerExpired(timer)
+    if(Timers[TIMER_DEBUG] == timer) then
+        dbg('Turning Debug Mode back to Off')
+        C4:UpdateProperty(DEBUG, 'Off')
+        Lib.KillTimer(TIMER_DEBUG)     
+    end
+end
+
+-- Name: dbg
+-- Description: Displays debug text if debugging is enabled
+-- Parameters:
+--        - strData: Text for debug
+function dbg(strData)
+	local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
+	
+	-- If debug contains print
+	if (string.find(Properties[DEBUG], "Print")) then
+		print(debugText)
+	end
+	
+	-- If debug contains log
+	if (string.find(Properties[DEBUG], "Log")) then
+		C4:ErrorLog(debugText)
+	end
+end
+
+
+-- Name: OnDriverDestroyed
+-- Description: Kills any active timers
+function OnDriverDestroyed()
+    Lib.KillAllTimers()
+end
+
+
+-- ===================================
+--              Library
+-- ===================================
+Lib = {}
+
+-- Name: StartTimer
+-- Description: Adds the timer onto the Timers table for easy management and creates a new timer
+function Lib.StartTimer(timerID, interval, unitType, bRepeat)
+    interval = tonumber(interval)
+    bRepeat = bRepeat or false
+    
+    Lib.KillTimer(timerID)
+    Timers[timerID] = C4:AddTimer(interval, unitType, bRepeat)
+end
+
+
+-- Name: KillTimer
+-- Description: Kills the provided timer
+function Lib.KillTimer(timerID)
+    if (Timers[timerID] ~= KILLED) then
+        Timers[timerID] = C4:KillTimer(Timers[timerID])
+    end
+end
+
+
+-- Name: KillAllTimers
+-- Description: Kills all timers running in the driver
+function Lib.KillAllTimers()
+    for k, _ in pairs(Timers) do
+        Lib.KillTimer(k)
+    end  
+end
+
+-- Init  
+for k, _ in pairs(Properties) do
+    OnPropertyChanged(k)
+end  
+  
+      </script>
+   </config>
+</devicedata>
