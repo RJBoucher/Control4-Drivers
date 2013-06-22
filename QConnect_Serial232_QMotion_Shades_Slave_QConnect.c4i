@@ -145,7 +145,7 @@ CHANNEL = "Channel"
 DEBUG   = "Debug Mode"
 
 -- Timers
-Timer = {}
+Timers = {}
 TIMER_DEBUG = "TimerDebug"
 
 -- General
@@ -208,7 +208,7 @@ CMDS =
 -- Description: Adds debug to the command being sent and applies the binding
 function SendToMaster(strCommand, tParams)
     dbg("Sending to master: " .. strCommand)
-    C4:SendToProxy(ID_LINK, strCommand, tParams)
+    C4:SendToProxy(ID_LINK, strCommand, tParams, "COMMAND")
 end
 
 -- Name: ReceivedFromProxy

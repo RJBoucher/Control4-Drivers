@@ -138,7 +138,7 @@ BRIDGE      = "Bridge ID"
 DEBUG       = "Debug Mode"
 
 -- Timers
-Timer = {}
+Timers = {}
 TIMER_DEBUG = "TimerDebug"
 
 -- Table serial commands
@@ -190,12 +190,22 @@ end
 -- Description: Constructs a QMotion message
 -- TODO: If the end value in the table can be determined programatically, that should be done here. For now the table value will be used.
 function ConstructMessage(channelID, command)
-    local endValue = tChannel[channelID][command] 
-    local strMessage = string.format("01 07 00 05 01 %02x %02x 00 %s", channelID, command, endValue)
+    channelID = tonumber(channelID)
+    command = tonumber(command)
+    
+    dbg("CHANNEL: " .. channelID)
+    dbg("COMMAND: " .. command)
+    
+    local endValue = tChannel[channelID][command]
+    return string.format("01 07 00 05 01 %02x %02x 00 %s", channelID, command, endValue)
 end
 
 function ReceivedFromProxy(idBinding, strCommand, tParams)
     dbg(string.format("ReceivedFromProxy[%s] Command: %s", idBinding, strCommand))
+    
+    for k, v in pairs(tParams) do
+        dbg(k .. ":" .. v)
+    end
 
     if (idBinding == ID_LINK) then
         if (strCommand == SHADE_COMMAND) then
@@ -224,7 +234,7 @@ function OnPropertyChanged(strProperty)
 	
     if (strProperty == DEBUG) then
         if (Properties[DEBUG] ~= 'Off') then
-            Core.StartTimer(TIMER_DEBUG, 15, "MINUTES")
+            Lib.StartTimer(TIMER_DEBUG, 15, "MINUTES")
         else
 			OnTimerExpired(Timers[TIMER_DEBUG])
         end
