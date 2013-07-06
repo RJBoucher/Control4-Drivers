@@ -6,7 +6,7 @@
    <modified>6/22/2013 2:22:00 PM</modified>
    <name>QConnect</name>
    <model>QConnect</model>
-   <version>100</version>
+   <version>101</version>
    <small>devices_sm/Blinds.gif</small>
    <large>devices_lg/Blinds.gif</large>
    <control>lua_gen</control>
@@ -41,7 +41,7 @@
             </classes>
         </connection>
       
-	  <connection>
+      <connection>
          <id>5001</id>
          <facing>6</facing>
          <connectionname>Blinds</connectionname>
@@ -56,11 +56,9 @@
             </class>
          </classes>
       </connection>
-      
    </connections>
    <config>
       <properties>
-      
          <property>
             <name>Debug Mode</name>
             <type>LIST</type>
@@ -74,7 +72,7 @@
             <readonly>false</readonly>
          </property>
       
-		 <property>
+         <property>
             <name>Channel</name>
             <type>LIST</type>
             <items>
@@ -96,22 +94,21 @@
             </items>
             <default>1</default>
          </property>
-
       </properties>
       <commands/>
-	  <documentation>	
+      <documentation>    
       
 June 22, 2013 
 - Modified by Ryan Boucher      
       
 -=QConnect driver for use with the QMotion QConnect product=-
-	  
+      
 The QConnect is used to control QMotion Shades using your Control4 system, so that you can pair the movement of your shades with other events in the home. Such as lowering the shades in the entertainment room, dimming the lights, turning the stereo on and turning the TV on when starting a movie.
 
 First learn the QConnect to all shades, using the rotary switch to set which channel you want the shades to be learned to (shades can be learned to more than one channel). On a shade that hasn't been learned to a remote, simply tug the shade about three inches, then push and hold the up button on the QConnect while it is unplugged from power(The QConnect has an internal battery for learning shades). On a shade that has been learned to another remote, take the learned remote and send the shade to the top. After the shade has gone to the top push and hold the up button until the shade starts to move down to 75% closed, release the up button when it begins to move. When the shade gets to 75% tug the shade about 3 inches, then press and hold the up button on the unplugged QConnect until the shade begins to move up. After learning all of the shades to the desired channels, set the rotary dial to 0, and plug the QConnect into the wall using the supplied power adapter. The light should turn solid red and stay on. 
-	
+    
 *When sending a command to the QConnect the light will turn off while the QConnect is transmitting a command to the shades, and turn back on when it is done transmitting*
-	
+    
 To use the QConnect with a Blind Proxy:
 1. Make the proper system connections to the RS-232 port you have the QConnect connected to
 2. Select the appropriate Channel ID form the properties tab
@@ -123,14 +120,14 @@ To use the QConnect without the proxy
 2. In the programming window select the QConnect driver and scroll down the command tab to Device specific commands.
 3. Set the Channel ID and movement command and map it to the command you want to trigger the shades.
 4. Execute the scene
-*Note: The default setting for Toggle will send the shades down. Sending the shades to the open position at anytime will set the toggle to send them to the Closed position and a Close command will cause the toggle to send the shades to the Open position	
+*Note: The default setting for Toggle will send the shades down. Sending the shades to the open position at anytime will set the toggle to send them to the Closed position and a Close command will cause the toggle to send the shades to the Open position    
 
 When the Script activates the command will be sent by the controller to the QConnect through the serial connection, and the QConnect will transmit the command via RF to the shades that were learned to the selected channel.
 
 Debug set to Print will give the following information. The Channel ID, the command being sent and the String that is being sent to the QConnect.
 
 *Note: The QConnect cannot communicate over ethernet.
-	</documentation>
+    </documentation>
       <script>
      
 -- ===================================
@@ -145,8 +142,9 @@ CHANNEL = "Channel"
 DEBUG   = "Debug Mode"
 
 -- Timers
-Timers = {}
+KILLED = 0
 TIMER_DEBUG = "TimerDebug"
+Timers = {[TIMER_DEBUG] = KILLED}
 
 -- General
 COMMAND           = "Command"
@@ -178,30 +176,30 @@ g_PrevState  = 1 -- (1 or 2 == Open or Close)
 -- Commands that are commented out are not supported.
 CMDS = 
 {
-	["BLIND_OPEN"]			= "bo",
-	["BLINDS_OPEN"]			= "bo",
-	["UP"]					= "bo",
-	["BLIND_CLOSE"]			= "bc",
-	["BLINDS_CLOSE"]		= "bc",
-	["DOWN"]				= "bc",
-	--["BLIND_STOP"]		= "bs",
-	--["BLINDS_STOP"]		= "bs",
-	--["STOP"]				= "bs",
-	["BLINDS_GOTO_PRESET"]  = "bp",
-	["BLIND_GOTO_PRESET"]   = "bp",
-	--["BLINDS_GOTO_LEVEL"] = "bv",
-	--["BLIND_GOTO_LEVEL"]  = "bv",
-	["BLINDS_TOGGLE"]		= "bt",
-	["BLIND_TOGGLE"]        = "bt",
-	["TOGGLE"]		        = "bt",
-	--["LOUVER_TOGGLE"]		= "lt",
-	--["LOUVERS_TOGGLE"]	= "lt",
-	--["LOUVERS_GOTO_LEVEL"]= "lv",
-	--["LOUVER_GOTO_LEVEL"] = "lv",
-	--["LOUVERS_CLOSE"]		= "lc",
-	--["LOUVER_CLOSE"]		= "lc",
-	--["LOUVERS_OPEN"]      = "lo",
-	--["LOUVER_OPEN"]       = "lo",
+    ["BLIND_OPEN"]          = "bo",
+    ["BLINDS_OPEN"]         = "bo",
+    ["UP"]                  = "bo",
+    ["BLIND_CLOSE"]         = "bc",
+    ["BLINDS_CLOSE"]        = "bc",
+    ["DOWN"]                = "bc",
+    --["BLIND_STOP"]        = "bs",
+    --["BLINDS_STOP"]       = "bs",
+    --["STOP"]              = "bs",
+    ["BLINDS_GOTO_PRESET"]  = "bp",
+    ["BLIND_GOTO_PRESET"]   = "bp",
+    --["BLINDS_GOTO_LEVEL"] = "bv",
+    --["BLIND_GOTO_LEVEL"]  = "bv",
+    ["BLINDS_TOGGLE"]       = "bt",
+    ["BLIND_TOGGLE"]        = "bt",
+    ["TOGGLE"]              = "bt",
+    --["LOUVER_TOGGLE"]     = "lt",
+    --["LOUVERS_TOGGLE"]    = "lt",
+    --["LOUVERS_GOTO_LEVEL"]= "lv",
+    --["LOUVER_GOTO_LEVEL"] = "lv",
+    --["LOUVERS_CLOSE"]     = "lc",
+    --["LOUVER_CLOSE"]      = "lc",
+    --["LOUVERS_OPEN"]      = "lo",
+    --["LOUVER_OPEN"]       = "lo",
 }
 
 -- Name: SendToMaster
@@ -250,13 +248,13 @@ end
 -- Name: OnPropertyChanged
 -- Description: Called when a property from Control 4 is changed for the driver
 function OnPropertyChanged(strProperty)
-	dbg(string.format("OnPropertyChanged[%s] set to %s", strProperty, Properties[strProperty]))
-	
+    dbg(string.format("OnPropertyChanged[%s] set to %s", strProperty, Properties[strProperty]))
+    
     if (strProperty == DEBUG) then
         if (Properties[DEBUG] ~= 'Off') then
             Lib.StartTimer(TIMER_DEBUG, 15, "MINUTES")
         else
-			OnTimerExpired(Timers[TIMER_DEBUG])
+            OnTimerExpired(Timers[TIMER_DEBUG])
         end
     end
 end
@@ -276,17 +274,17 @@ end
 -- Parameters:
 --        - strData: Text for debug
 function dbg(strData)
-	local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
-	
-	-- If debug contains print
-	if (string.find(Properties[DEBUG], "Print")) then
-		print(debugText)
-	end
-	
-	-- If debug contains log
-	if (string.find(Properties[DEBUG], "Log")) then
-		C4:ErrorLog(debugText)
-	end
+    local debugText = string.format("%s: %s", os.date("[%x %X]"), strData)
+    
+    -- If debug contains print
+    if (string.find(Properties[DEBUG], "Print")) then
+        print(debugText)
+    end
+    
+    -- If debug contains log
+    if (string.find(Properties[DEBUG], "Log")) then
+        C4:ErrorLog(debugText)
+    end
 end
 
 
