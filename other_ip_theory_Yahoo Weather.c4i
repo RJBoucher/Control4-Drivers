@@ -6,8 +6,8 @@
   <name>Yahoo Weather Service</name>
   <model>Yahoo Weather</model>
   <created>04/15/2013 05:46 PM</created>
-  <modified>06/03/2013 11:00 PM</modified>
-  <version>11</version>
+  <modified>01/05/2013</modified>
+  <version>12</version>
   <small>devices_sm\receiver.gif</small>
   <large>devices_lg\receiver.gif</large>
   <top>
@@ -54,7 +54,10 @@
     along with this program.  If not, see "http://www.gnu.org/licenses/".    
 
 Changes:
-    Version 1.0 -> 1.1
+    Version 1.2
+    - Modified string pattern for matching weather values, now grabs everything between the quotes
+	
+    Version 1.1
     - Removed useless connection. (Thanks to Ryan E)
     
 Overview:
@@ -268,7 +271,7 @@ function ReceivedAsync(ticketId, strData, responseCode, tHeaders)
 end
 
 function ParseData(strData, item)
-	return string.match(strData, string.format("%s=\"([A-Za-z,:- 0-9.]+)\"", item)) or 
+	return string.match(strData, string.format("%s=\"(.-)\"", item)) or 
 	string.match(strData, string.format("<%s>Conditions for (.+)</%s>", item, item)) or
 	"N/A"
 end
