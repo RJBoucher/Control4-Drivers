@@ -6,7 +6,7 @@
 <modified>6/03/2013 11:00 PM</modified>
 <name>TCP Event Server</name>
 <model>TCP Event Server</model>
-<version>11</version>
+<version>12</version>
 <small>devices_sm/c4.gif</small>
 <large>devices_lg/c4.gif</large>
 <control>lua_gen</control>
